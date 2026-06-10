@@ -1,252 +1,408 @@
-/* Importation des polices Google Fonts pour un style futuriste */
+/* ============================================================
+   Chrono Opposition SL — style.css
+   Style cohérent avec le répéteur ASL-FFE
+   ============================================================ */
+
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
 
-/* --- Styles de base et mise en page --- */
+/* ─── VARIABLES ────────────────────────────────────────── */
+:root {
+    /* Fond — identique au répéteur */
+    --bg:           #0d1117;
+    --bg-card:      #161b22;
+    --bg-input:     #0d1117;
+    --border:       #30363d;
 
-/* Corps de la page : Fond sombre et dégradé, police par défaut et centrage */
+    /* Texte */
+    --text:         #c9d1d9;
+    --text-dim:     #8b949e;
+
+    /* Accents laser */
+    --cyan:         #4df5d9;
+    --cyan-glow:    rgba(77, 245, 217, 0.20);
+    --cyan-border:  rgba(77, 245, 217, 0.30);
+    --green:        #0cc346;
+    --green-glow:   rgba(12, 195, 70, 0.30);
+    --red:          #ff004c;
+    --red-glow:     rgba(255, 0, 76, 0.30);
+    --blue:         #007bff;
+    --blue-glow:    rgba(0, 123, 255, 0.30);
+
+    /* Rayon */
+    --radius:       14px;
+    --radius-btn:   50px;
+
+    /* Safe area iOS */
+    --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
-    font-family: 'Roboto Mono', monospace; /* Police futuriste monospace */
-    background: linear-gradient(135deg, #0d0d1a, #1a1a2e); /* Dégradé sombre */
-    color: #e0e0e0;
+    font-family: 'Roboto Mono', monospace;
+    background-color: var(--bg);
+    color: var(--text);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
-    padding: 15px;
+    min-height: 100dvh;
+    padding: 24px 16px;
+    padding-bottom: calc(24px + var(--safe-b));
+    /* Pas de gradient : fond uni plat comme le répéteur */
 }
 
-/* Conteneur principal : Flexbox pour une organisation claire et un espacement */
+/* ─── CONTENEUR ────────────────────────────────────────── */
 .container {
     width: 100%;
-    max-width: 700px;
+    max-width: 680px;
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Espace entre les éléments */
+    gap: 16px;
 }
 
-/* Titre de l'application : Style néon avec ombre et couleur vive */
+/* ─── TITRE ────────────────────────────────────────────── */
 h1 {
-    font-family: 'Orbitron', sans-serif; /* Police futuriste pour le titre */
+    font-family: 'Orbitron', sans-serif;
     text-align: center;
-    color: #4df5d9; /* Couleur cyan-vert */
-    text-shadow: 0 0 5px #4df5d9, 0 0 10px #4df5d9; /* Effet de lueur néon */
-    margin-bottom: 10px;
-    margin-top: 1px;
+    color: var(--cyan);
+    /* Lueur légère, pas agressive */
+    text-shadow: 0 0 12px var(--cyan-glow);
+    font-size: clamp(1.1rem, 4.5vw, 1.6rem);
+    margin: 0 0 4px;
+    line-height: 1.3;
+    letter-spacing: 2px;
 }
 
-/* --- Styles des cartes de chronomètre --- */
+.h1-sl {
+    color: var(--text-dim);
+    text-shadow: none;
+    font-weight: 400;
+    font-size: 0.72em;
+    opacity: 0.7;
+    margin-left: 6px;
+}
 
-/* Carte de chronomètre : Effet de verre futuriste et lueur */
+/* ─── CARTES ────────────────────────────────────────────── */
 .chrono-card {
-    background: rgba(40, 40, 60, 0.4); /* Fond semi-transparent */
-    border: 1px solid rgba(77, 245, 217, 0.3); /* Bordure fine de couleur néon */
-    padding: 8px;
-    border-radius: 12px;
-    box-shadow: 0 0 25px rgba(77, 245, 217, 0.2); /* Ombre de lueur subtile */
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 20px 18px;
+    border-radius: var(--radius);
+    /* Lueur subtile sur la bordure basse, comme les cartes du répéteur */
+    box-shadow: 0 0 0 1px rgba(77, 245, 217, 0.04),
+                0 4px 24px rgba(0, 0, 0, 0.4);
     text-align: center;
-    backdrop-filter: blur(5px); /* Effet de flou derrière pour un look "verre" */
+    transition: border-color 0.25s;
 }
 
-/* Sous-titres des cartes (ex: Total Prestation) */
+/* La carte s'illumine légèrement quand active (classe ajoutée par JS ou hover) */
+.chrono-card:focus-within {
+    border-color: var(--cyan-border);
+}
+
 .chrono-card h2 {
     font-family: 'Orbitron', sans-serif;
-    color: #4df5d9;
-    text-shadow: 0 0 5px #4df5d9;
-    margin-bottom: 6px;
+    color: var(--text-dim);        /* Gris discret — le temps est la star */
+    font-size: clamp(0.75rem, 3vw, 1rem);
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 0 0 10px;
 }
 
-/* Affichage du temps : Grand format néon */
+/* ─── AFFICHAGE DU TEMPS ───────────────────────────────── */
 .timer {
     font-family: 'Roboto Mono', monospace;
-    font-size: 3.5em;
+    font-size: clamp(3rem, 15vw, 5rem);
     font-weight: 700;
     color: #ffffff;
-    text-shadow: 0 0 3px #ffffff, 0 0 10px #4df5d9; /* Effet de lueur néon plus intense */
-    margin: 7px 0;
+    /* Lueur cyan douce, lisible */
+    text-shadow: 0 0 20px var(--cyan-glow);
+    margin: 6px 0 18px;
+    letter-spacing: 3px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
 }
 
-/* --- Styles des boutons et entrées manuelles --- */
-
-/* Conteneur des boutons de contrôle */
+/* ─── BOUTONS DE CONTRÔLE ──────────────────────────────── */
 .controls {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 14px;
+    margin-bottom: 4px;
 }
 
-/* Boutons Play/Pause/Reset : Style uniforme et effet de lueur */
 .controls button, .set-time, #resetAll {
-    padding: 12px 25px;
-    font-size: 1em;
-    font-weight: bold;
+    min-height: 52px;
+    padding: 12px 28px;
+    font-size: 0.9rem;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
     border: none;
-    border-radius: 50px; /* Forme de capsule */
+    border-radius: var(--radius-btn);
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s; /* Transition pour l'interactivité */
+    transition: transform 0.12s, box-shadow 0.2s, background-color 0.2s;
     text-transform: uppercase;
     letter-spacing: 1px;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* Bouton Play/Pause : Couleur et lueur vertes */
+/* Play — vert laser */
 .play-pause {
-    background-color: #28a745;
-    color: #0d0d1a;
-    box-shadow: 0 0 15px #28a745;
+    background-color: var(--green);
+    color: #0d1117;
+    box-shadow: 0 0 14px var(--green-glow);
+    min-width: 60px;
 }
 
-/* Bouton Reset : Couleur et lueur rouges */
+/* Reset — rouge laser */
 .reset {
-    background-color: #dc3545;
-    color: #0d0d1a;
-    box-shadow: 0 0 15px #dc3545;
+    background-color: transparent;
+    color: var(--red);
+    border: 1px solid rgba(255, 0, 76, 0.4) !important;
+    box-shadow: 0 0 10px var(--red-glow);
+    min-width: 60px;
 }
 
-/* Effet au survol : Légère lueur et grossissement */
-.controls button:hover, .set-time:hover, #resetAll:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 0 25px;
+.reset:hover {
+    background-color: rgba(255, 0, 76, 0.12);
 }
 
-/* Effet au clic : Rétrécissement */
+/* Hover desktop uniquement */
+@media (hover: hover) {
+    .play-pause:hover { box-shadow: 0 0 22px var(--green-glow); }
+    .set-time:hover   { box-shadow: 0 0 22px var(--blue-glow); }
+    #resetAll:hover   { background-color: rgba(255, 0, 76, 0.10); box-shadow: 0 0 18px var(--red-glow); }
+}
+
 .controls button:active, .set-time:active, #resetAll:active {
-    transform: scale(0.95);
+    transform: scale(0.93);
 }
 
-/* Saisie manuelle et bouton de validation */
+/* Icônes dans les boutons de contrôle */
+.controls button i {
+    font-size: 1.25em;
+}
+
+.play-pause i { color: #0d1117; }
+.reset i      { color: var(--red); }
+
+/* ─── SAISIE MANUELLE ──────────────────────────────────── */
 .manual-input {
-    margin-top: 20px;
-    display: flex;
+    display: none;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
     justify-content: center;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
-.manual-input label {
-    font-size: 0.9em;
-    color: #b0e0d8;
-}
-
-.manual-input input {
-    background: rgba(40, 40, 60, 0.6);
-    border: 1px solid #4df5d9;
-    color: #e0e0e0;
-    padding: 8px 12px;
-    border-radius: 5px;
-    width: 120px;
-}
-
-/* Bouton de validation (Ok) */
-.set-time {
-    background-color: #007bff;
-    color: white;
-    box-shadow: 0 0 15px #007bff;
-}
-
-/* Affichage des pourcentages */
-.percentage-display {
-    margin-top: 15px;
-    font-weight: 700;
-    color: #b0e0d8;
-    text-shadow: 0 0 5px #b0e0d8;
-}
-
-/* Styles pour les icônes Font Awesome */
-.controls button i {
-    color: #e0e0e0; /* Couleur claire pour les icônes */
-    font-size: 1.2em; /* Taille légèrement plus grande que le texte du bouton */
-    text-shadow: 0 0 5px #e0e0e0; /* Effet de lueur subtile */
-}
-
-/* Ajustement pour le bouton de réinitialisation globale */
-#resetAll i {
-    margin-right: 5px; /* Petit espace entre l'icône et le texte */
-}
-
-
-/* Cache les sections de saisie manuelle par défaut */
-.manual-input {
-    display: none;
-}
-
-/* Affiche les sections de saisie manuelle lorsque la classe 'show' est présente */
 .chrono-card.show-manual-input .manual-input {
     display: flex;
 }
 
-/* Style pour le conteneur des boutons du bas */
+.manual-input label {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.manual-input input {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    width: 135px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 3px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.manual-input input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px var(--cyan-glow);
+}
+
+/* Bouton Ok */
+.set-time {
+    background-color: var(--blue);
+    color: #ffffff;
+    box-shadow: 0 0 12px var(--blue-glow);
+}
+
+/* ─── POURCENTAGE ──────────────────────────────────────── */
+.percentage-display {
+    margin-top: 16px;
+    padding: 10px 16px;
+    background: rgba(77, 245, 217, 0.06);
+    border: 1px solid var(--cyan-border);
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan-glow);
+    min-height: 2.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+    /* Visible seulement quand il y a du contenu */
+    transition: opacity 0.3s;
+}
+
+/* Vide = quasi invisible (le JS met du texte quand totalPrestation > 0) */
+.percentage-display:empty {
+    opacity: 0;
+    border-color: transparent;
+    background: transparent;
+}
+
+/* ─── BOUTONS DU BAS ───────────────────────────────────── */
 .bottom-buttons {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
+.bottom-buttons .set-time,
+.bottom-buttons #resetAll {
+    flex: 1 1 150px;
+    max-width: 280px;
+}
 
+/* Reset global — contour rouge */
+#resetAll {
+    background-color: transparent;
+    color: var(--red);
+    border: 1px solid rgba(255, 0, 76, 0.4) !important;
+    box-shadow: 0 0 10px var(--red-glow);
+}
 
+#resetAll i { margin-right: 6px; color: var(--red); }
 
-/* --- Styles pour les écrans plus petits (smartphones) --- */
+/* ─── BANNIÈRE INSTALLATION PWA ────────────────────────── */
+.pwa-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 14px 16px;
+    padding-bottom: calc(14px + var(--safe-b));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    z-index: 999;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+}
 
-@media (max-width: 600px) {
-    .container {
-        gap: 20px;
+.pwa-banner--hidden { display: none; }
+
+.pwa-banner__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.pwa-banner__left img { border-radius: 10px; flex-shrink: 0; }
+
+.pwa-banner__title {
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text);
+}
+
+.pwa-banner__sub {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+.pwa-banner__actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.pwa-banner__actions button {
+    border: none;
+    border-radius: 8px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+}
+
+#pwaInstallBtn {
+    background: var(--blue);
+    color: #ffffff;
+    box-shadow: 0 0 10px var(--blue-glow);
+}
+
+#pwaDismissBtn {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border) !important;
+}
+
+/* ─── RESPONSIVE SMARTPHONE ────────────────────────────── */
+@media (max-width: 480px) {
+    body { padding: 16px 12px; }
+    .container { gap: 12px; }
+
+    .controls button {
+        flex: 1;
+        max-width: 120px;
     }
 
-    h1 {
-        font-size: 2em;
-    }
-    
-    .timer {
-        font-size: 2.5em;
-    }
-    
-    .controls button, .set-time, #resetAll {
-        padding: 10px 18px;
-        font-size: 0.9em;
-    }
-    
-    .manual-input {
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .manual-input input {
-        width: 150px; /* Plus large pour la saisie tactile */
-        text-align: center;
-    }
+    .manual-input { gap: 8px; }
+    .manual-input input { width: 140px; }
+}
 
-    /* --- Mise en page adaptative pour le mode paysage --- */
-
-/* Applique ces styles lorsque l'écran est plus large que haut (mode paysage) et a une largeur minimale de 600px */
+/* ─── RESPONSIVE PAYSAGE ────────────────────────────────── */
 @media (orientation: landscape) and (min-width: 600px) {
+    body { align-items: center; }
 
-    /* Aligne les éléments horizontalement */
     .container {
         flex-direction: row;
-        flex-wrap: wrap; /* Permet aux cartes de passer à la ligne suivante */
+        flex-wrap: wrap;
         justify-content: center;
         align-items: flex-start;
-        gap: 10px;
+        gap: 16px;
     }
 
-    /* Le titre et la carte "Total Prestation" occupent toute la largeur */
-    h1, .chrono-card:first-of-type {
-        width: 100%;
-    }
+    h1, .bottom-buttons { width: 100%; }
 
-    /* Crée un nouveau conteneur pour les deux dernières cartes */
+    .chrono-card:first-of-type { width: 100%; }
+
     .second-row-cards {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
+        justify-content: center;
+        gap: 16px;
         width: 100%;
     }
 
-    /* Les cartes "Temps d'Opposition" et "Temps de Bataille" se partagent la largeur */
-    .chrono-card:nth-of-type(2), 
-    .chrono-card:nth-of-type(3) {
-        flex: 1;
-    }
+    .second-row-cards .chrono-card { flex: 1; }
 }
+
+/* ─── MODE STANDALONE (installé) ───────────────────────── */
+@media all and (display-mode: standalone) {
+    .pwa-banner { display: none !important; }
 }

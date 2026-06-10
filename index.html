@@ -2,51 +2,121 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chronomètres Escrime</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d0d1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chrono SL">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+
+    <title>Chrono d'Opposition SL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div class="container">
-        <h1>Chrono d'Opposition Escrime</h1>
-        
+        <h1>Chrono d'Opposition <span class="h1-sl">SL</span></h1>
+
+        <!-- Carte Total Prestation -->
         <div class="chrono-card">
             <h2>Total Prestation</h2>
             <div class="timer" id="totalPrestation">00:00:00</div>
             <div class="controls">
                 <button class="play-pause" data-target="totalPrestation"><i class="fa-solid fa-play"></i></button>
-                <button class="reset" data-target="totalPrestation"><i class="fa-solid fa-rotate-right"></i></button>
+                <button class="reset"      data-target="totalPrestation"><i class="fa-solid fa-rotate-right"></i></button>
             </div>
             <div class="manual-input">
                 <label for="inputTotalPrestation">Saisie manuelle :</label>
-                <input type="text" id="inputTotalPrestation" placeholder="MM:SS:ms">
+                <input type="text" id="inputTotalPrestation" placeholder="MM:SS:ms" inputmode="numeric">
                 <button class="set-time" data-target="totalPrestation">Ok</button>
             </div>
         </div>
 
+        <!-- Carte Temps d'Opposition -->
         <div class="second-row-cards">
             <div class="chrono-card">
                 <h2>Temps d'Opposition</h2>
                 <div class="timer" id="tempsOpposition">00:00:00</div>
                 <div class="controls">
                     <button class="play-pause" data-target="tempsOpposition"><i class="fa-solid fa-play"></i></button>
-                    <button class="reset" data-target="tempsOpposition"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button class="reset"      data-target="tempsOpposition"><i class="fa-solid fa-rotate-right"></i></button>
                 </div>
                 <div class="manual-input">
                     <label for="inputTempsOpposition">Saisie manuelle :</label>
-                    <input type="text" id="inputTempsOpposition" placeholder="MM:SS:ms">
+                    <input type="text" id="inputTempsOpposition" placeholder="MM:SS:ms" inputmode="numeric">
                     <button class="set-time" data-target="tempsOpposition">Ok</button>
                 </div>
                 <div class="percentage-display" id="pourcentageOpposition"></div>
             </div>
-        </div> 
-
-        <div class="bottom-buttons">
-            <button id="toggleManualInput" class="set-time">Saisie Manuelle</button>
-            <button id="resetAll" class="reset"><i class="fa-solid fa-arrows-rotate"></i> Réinitialiser Tout</button>
         </div>
-        
-    </div> 
+
+        <!-- Boutons bas -->
+        <div class="bottom-buttons">
+            <button id="toggleManualInput" class="set-time">
+                <i class="fa-solid fa-keyboard"></i> Saisie Manuelle
+            </button>
+            <button id="resetAll" class="reset">
+                <i class="fa-solid fa-arrows-rotate"></i> Réinitialiser Tout
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Bannière installation PWA -->
+    <div id="pwaInstallBanner" class="pwa-banner pwa-banner--hidden">
+        <div class="pwa-banner__left">
+            <img src="icons/icon-72x72.png" width="40" height="40" alt="" onerror="this.style.display='none'">
+            <div>
+                <div class="pwa-banner__title">Installer Chrono SL</div>
+                <div class="pwa-banner__sub">Accès rapide depuis l'écran d'accueil</div>
+            </div>
+        </div>
+        <div class="pwa-banner__actions">
+            <button id="pwaInstallBtn">Installer</button>
+            <button id="pwaDismissBtn">✕</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script>
+        // PWA — Service Worker & bannière installation
+        // (code séparé du script.js original pour ne pas y toucher)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js');
+        }
+
+        let deferredPrompt = null;
+        const banner      = document.getElementById('pwaInstallBanner');
+        const installBtn  = document.getElementById('pwaInstallBtn');
+        const dismissBtn  = document.getElementById('pwaDismissBtn');
+
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => banner.classList.remove('pwa-banner--hidden'), 2000);
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            banner.classList.add('pwa-banner--hidden');
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+        });
+
+        dismissBtn.addEventListener('click', () => {
+            banner.classList.add('pwa-banner--hidden');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            banner.classList.add('pwa-banner--hidden');
+        });
+    </script>
 </body>
 </html>
