@@ -4,7 +4,7 @@
   "description": "Chronomètre d'opposition pour chorégraphie de sabre laser et escrime artistique",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#0d0d1a",
   "theme_color": "#0d0d1a",
   "lang": "fr",
