@@ -281,6 +281,13 @@ h1 {
     max-width: 280px;
 }
 
+.bottom-buttons .format-btn {
+    background-color: var(--bg-card);
+    color: var(--cyan);
+    border: 1px solid var(--cyan-border) !important;
+    box-shadow: 0 0 10px var(--cyan-glow);
+}
+
 /* Reset global — contour rouge */
 #resetAll {
     background-color: transparent;
